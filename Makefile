@@ -4,7 +4,7 @@
 # Link against reference libpi (edit LDLIBS, LDFLAGS to change)
 
 PROGRAM = myprogram.bin
-SOURCES = $(PROGRAM:.bin=.c) mymodule.c
+SOURCES = $(PROGRAM:.bin=.c) mymodule.c LSM6DS33.c accel.c
 
 all: $(PROGRAM)
 

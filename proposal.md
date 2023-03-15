@@ -6,7 +6,7 @@
 I hope to *(1)* create a way for the Raspberry Pi to read neural signals from the forearm through electromyography and *(2)* interface the device with some kind of visual output (LEDs, screen, etc). The final end goal is to create a wristband that reads electrical signals from the muscle when someone closes their hand and opens their hand. As well, I hope to use an accelerometer to detect the rotation of the arm as another way to interact with the device. The output of the device will be a way to interact with a screen i.e. drawing or turning on certain lights. At the end, I hope to learn more about building and designing a device that can be interfaced with humans as well as the electrical engineering aspects of building the device. 
 
 ## Hardware, budget
-	- 3x TL072 IC Chip 
+  - 3x TL072 IC Chip 
 	- 1x INA106 IC Chip ($13.44)
 	- 3x AgCl dry EMG electrodes
 	- Alligator clips / wires
