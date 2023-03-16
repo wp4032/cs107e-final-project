@@ -4,14 +4,14 @@
 # Link against reference libpi (edit LDLIBS, LDFLAGS to change)
 
 PROGRAM = myprogram.bin
-SOURCES = $(PROGRAM:.bin=.c) mymodule.c LSM6DS33.c accel.c
+SOURCES = $(PROGRAM:.bin=.c) mymodule.c LSM6DS33.c accel.c messages.c controls.c
 
 all: $(PROGRAM)
 
 CFLAGS  = -I$(CS107E)/include -Og -g -std=c99 $$warn $$freestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
-LDLIBS  = -lpi -lgcc
+LDLIBS  = -lpi -lgcc -lpiextra
 
 OBJECTS = $(addsuffix .o, $(basename $(SOURCES)))
 

@@ -91,15 +91,3 @@ void gyro_xyz(short *x, short *y, short *z) {
     *z = gyro_get_z();
 }
 
-void main(void) {
-
-
-	// while(1) { 
-    //     short x, y, z;
-    //     lsm6ds33_read_accelerometer(&x, &y, &z);
-    //     // 16384 is 1g (1g == 1000mg)
-    //     printf("accel=(%dmg,%dmg,%dmg)\n", x/16, y/16, z/16);
-    //     timer_delay_ms(200);
-	// }
-}
-

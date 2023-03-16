@@ -45,12 +45,12 @@ void lsm6ds33_init() {
 }
 
 unsigned int lsm6ds33_get_whoami(void) {
-	// should return 0xE5 ...
+	// should return 0x69 ...
     return lsm6ds33_read_reg(WHO_AM_I);
 }
 
 int lsm6ds33_check_whoami(void) {
-    return (lsm6ds33_get_whoami() == 0xE5);
+    return (lsm6ds33_get_whoami() == 0x69);
 }
 
 // default is enabled
