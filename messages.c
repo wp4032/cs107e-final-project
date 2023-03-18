@@ -8,11 +8,21 @@ void print_title(void) {
 void print_start_calibration(void) {
   printf("\nStarting calibration...\nDo not move...\n");
   timer_delay(1);
-  printf("\n3");
+  printf("\n[3]");
   timer_delay(1);
-  printf("\n2");
+  printf("\n[2]");
   timer_delay(1);
-  printf("\n1\n");
+  printf("\n[1]\n");
+}
+
+void print_calibration_try_again(void) {
+  printf("\nRestarting calibration again...\nTry to point your arm straight toward the screen\n");
+  timer_delay(1);
+  printf("\n[3]");
+  timer_delay(1);
+  printf("\n[2]");
+  timer_delay(1);
+  printf("\n[1]\n");
 }
 
 void print_calibration_success(void) {
@@ -20,5 +30,9 @@ void print_calibration_success(void) {
 }
 
 void print_calibration_failure(void) {
-  printf("\n\nCalibration failed!\nTry to point your arm straight toward the screen\n");
+  printf("\n\nCalibration failed!\n");
+}
+
+void print_error(void) {
+  printf("\n\nError occured! Restart the device :(\n");
 }
