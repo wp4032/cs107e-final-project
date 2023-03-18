@@ -11,25 +11,40 @@
  */
 
 typedef struct {
-  signed int min_x;
-  signed int max_x;
-  signed int min_y;
-  signed int max_y;
+  unsigned int min_x;
+  unsigned int max_x;
+  unsigned int min_y;
+  unsigned int max_y;
 } control_limits_t;
 
 typedef struct {
+signed short accel_x;
+signed short accel_y;
+signed short accel_z;
+} control_accel_t;
+
+typedef struct {
   enum { EMG_ACTIVE, EMG_INACTIVE } action;
-  signed int x;
-  signed int y;
+  unsigned int x;
+  unsigned int y;
   control_limits_t limits;
   unsigned int sensitivity;
+  unsigned int threshold;
 } control_action_t;
 
+#define SCREEN_X 1960
+#define SCREEN_Y 1600
 
 void controls_init(void);
 
+void set_limits(unsigned int screen_x, unsigned int screen_y);
+void calibrate(void);
+
 int clear_accel(void);
 int clear_gyro(void);
+
+control_accel_t control_read_accel(void);
+
 void loop(void);
 
 #endif

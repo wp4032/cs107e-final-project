@@ -4,6 +4,7 @@
 #include "printf.h"
 #include "timer.h"
 #include "peripherals.h"
+#include "controls.h"
 
 static signed short accel_x_offset = 0;
 static signed short accel_y_offset = 0;
@@ -12,10 +13,31 @@ static signed short gyro_x_offset = 0;
 static signed short gyro_y_offset = 0;
 static signed short gyro_z_offset = 0;
 
+static control_limits_t limits;
+
 int clear_accel(void);
 int clear_gyro(void);
 
 void controls_init(void) {
+  set_limits(SCREEN_X, SCREEN_Y);
+  calibrate();
+}
+
+static unsigned int abs(signed int a) {
+  if (a < 0) {
+    return a * -1;
+  }
+  return a;
+}
+
+void set_limits(unsigned int screen_x, unsigned int screen_y) {
+  limits.min_x = 0;
+  limits.max_x = screen_x;
+  limits.min_y = 0;
+  limits.max_y = screen_y;
+}
+
+void calibrate(void) {
   int attempts = 0;
   while (clear_accel() || clear_gyro()) {
     if (attempts == 2) {
@@ -27,13 +49,6 @@ void controls_init(void) {
     attempts++;
   }
   print_calibration_success();
-}
-
-static unsigned int abs(signed int a) {
-  if (a < 0) {
-    return a * -1;
-  }
-  return a;
 }
 
 int clear_accel(void) {
@@ -49,10 +64,20 @@ int clear_gyro(void) {
   return (abs(gyro_x_offset/16) > 50 || abs(gyro_y_offset/16) > 50 || abs(gyro_z_offset/16) > 50);
 }
 
+control_accel_t control_read_accel(void) {
+  control_accel_t result = {
+    (accel_get_x() - accel_x_offset)/16,
+    (accel_get_y() - accel_y_offset)/16, 
+    (accel_get_z() - accel_z_offset)/16
+  };
+  printf("accel=(%dmg,%dmg,%dmg)\n", result.accel_x, result.accel_y, result.accel_z);
+  return result;
+}
+
 void loop(void) {
   while(1) { 
     success_led_on();
-    printf("accel=(%dmg,%dmg,%dmg)\n", (accel_get_x() - accel_x_offset)/16, (accel_get_y() - accel_y_offset)/16, (accel_get_z() - accel_z_offset)/16);
+    control_read_accel();
     printf("gyro=(%d, %d, %d)\n", (gyro_get_x() - gyro_x_offset)/16, (gyro_get_y() - gyro_y_offset)/16, (gyro_get_z() - gyro_z_offset)/16);
     timer_delay_ms(100);
     success_led_off();
