@@ -16,8 +16,8 @@ void accel_init(void) {
 // PARAMS: void
 // RETURNS: the acceleration in the x direction
 // CITATION: from given LSM6DS33.c implementation 
-int accel_get_x(void) {
-    short x =  lsm6ds33_read_reg(OUTX_L_XL);
+signed short accel_get_x(void) {
+    signed short x =  lsm6ds33_read_reg(OUTX_L_XL);
     x |= lsm6ds33_read_reg(OUTX_H_XL) << 8;
     return x;
 }
@@ -26,8 +26,8 @@ int accel_get_x(void) {
 // PARAMS: void
 // RETURNS: the acceleration in the y direction
 // CITATION: from given LSM6DS33.c implementation 
-int accel_get_y(void) {
-    short y =  lsm6ds33_read_reg(OUTY_L_XL);
+signed short accel_get_y(void) {
+    signed short y =  lsm6ds33_read_reg(OUTY_L_XL);
     y |= lsm6ds33_read_reg(OUTY_H_XL) << 8;
     return y; 
 }
@@ -36,8 +36,8 @@ int accel_get_y(void) {
 // PARAMS: void
 // RETURNS: the acceleration in the z direction
 // CITATION: from given LSM6DS33.c implementation 
-int accel_get_z(void) {
-    short z =  lsm6ds33_read_reg(OUTZ_L_XL);
+signed short accel_get_z(void) {
+    signed short z =  lsm6ds33_read_reg(OUTZ_L_XL);
     z |= lsm6ds33_read_reg(OUTZ_H_XL) << 8;
     return z; 
 }

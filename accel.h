@@ -13,9 +13,9 @@
 
 void accel_init();
 
-int accel_get_x();
-int accel_get_y();
-int accel_get_z();
+signed short accel_get_x(void);
+signed short accel_get_y(void);
+signed short accel_get_z(void);
 void accel_xyz(short *x, short *y, short *z);
 
 
