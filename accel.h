@@ -13,15 +13,16 @@
 
 void accel_init();
 
+// FUNCTIONS - Accelerometer
 signed short accel_get_x(void);
 signed short accel_get_y(void);
 signed short accel_get_z(void);
 void accel_xyz(short *x, short *y, short *z);
 
-
-int gyro_get_x();
-int gyro_get_y();
-int gyro_get_z();
+// FUNCTIONS - Gyroscope
+signed short gyro_get_x();
+signed short gyro_get_y();
+signed short gyro_get_z();
 void gyro_xyz(short *x, short *y, short *z);
 
 #endif

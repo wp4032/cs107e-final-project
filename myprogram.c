@@ -7,8 +7,9 @@
 #include "controls.h"
 #include "gpio.h"
 #include "peripherals.h"
+#include "screen.h"
 
-void main(void)
+void main(void) 
 {
     uart_init();
     timer_init();
@@ -22,7 +23,8 @@ void main(void)
 
     controls_init();
 
-    loop();
+    screen_init();
+    loop_test();
 
     uart_putchar(EOT);
 }

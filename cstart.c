@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "malloc.h"
 #include "gpio.h"
+#include "timer.h"
 
 // linker memmap places these symbols at start/end of bss
 extern char __bss_start__, __bss_end__;
@@ -23,11 +24,6 @@ void _cstart(void)
         *bss++ = 0;
     }
 
-    main();
-
-    // memory_report();            // Addition added for mini-Valgrind memory report from assignment 4
-    // uart_putchar(EOT);
-
     // Turn on the green ACT LED (GPIO 47), success LED (GPIO 12), and
     gpio_set_output(GPIO_PIN47);
     gpio_set_output(GPIO_PIN12);
@@ -36,4 +32,13 @@ void _cstart(void)
     gpio_write(GPIO_PIN47, 1);
     gpio_write(GPIO_PIN12, 1);
     gpio_write(GPIO_PIN6, 1);
+
+    timer_delay_ms(250);
+
+    gpio_write(GPIO_PIN6, 0);
+
+    main();
+
+    // memory_report();            // Addition added for mini-Valgrind memory report from assignment 4
+    uart_putchar(EOT);
 }

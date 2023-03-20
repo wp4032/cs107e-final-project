@@ -38,10 +38,10 @@ typedef struct {
   signed int threshold;
 } control_action_t;
 
-#define SCREEN_X 1960
-#define SCREEN_Y 1600
-#define THRESHOLD 50
-#define SENSITIVITY 30 
+// #define SCREEN_X 1960
+// #define SCREEN_Y 1600
+// #define THRESHOLD 50
+// #define SENSITIVITY 30 
 
 void controls_init(void);
 
@@ -56,6 +56,7 @@ int clear_gyro(void);
 control_accel_t control_read_accel(void);
 control_gyro_t control_read_gyro(void);
 void control_read_action(control_action_t *ctrl);
+control_action_t control_get_action(void);
 
 void loop(void);
 

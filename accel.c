@@ -5,6 +5,10 @@
 #include "LSM6DS33.h"
 #include "assert.h"
 
+
+// FUNCTION: accel_init
+// PARAMS: void
+// RETURNS: initializes I2C protocol and LSM6DS33 accelerometer
 void accel_init(void) {
     i2c_init();
     lsm6ds33_init();
@@ -55,7 +59,7 @@ void accel_xyz(short *x, short *y, short *z) {
 // PARAMS: void
 // RETURNS: the angular velocity in the x direction
 // CITATION: from given LSM6DS33.c implementation 
-int gyro_get_x(void) {
+signed short gyro_get_x(void) {
     short x =  lsm6ds33_read_reg(OUTX_L_G);
     x |= lsm6ds33_read_reg(OUTX_H_G) << 8;
     return x;
@@ -65,7 +69,7 @@ int gyro_get_x(void) {
 // PARAMS: void
 // RETURNS: the angular velocity in the y direction
 // CITATION: from given LSM6DS33.c implementation 
-int gyro_get_y(void) {
+signed short gyro_get_y(void) {
     short y =  lsm6ds33_read_reg(OUTY_L_G);
     y |= lsm6ds33_read_reg(OUTY_H_G) << 8;
     return y; 
@@ -75,7 +79,7 @@ int gyro_get_y(void) {
 // PARAMS: void
 // RETURNS: the angular velocity in the z direction
 // CITATION: from given LSM6DS33.c implementation 
-int gyro_get_z(void) {
+signed short gyro_get_z(void) {
     short z =  lsm6ds33_read_reg(OUTZ_L_G);
     z |= lsm6ds33_read_reg(OUTZ_H_G) << 8;
     return z; 
