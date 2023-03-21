@@ -25,4 +25,9 @@ signed short gyro_get_y();
 signed short gyro_get_z();
 void gyro_xyz(short *x, short *y, short *z);
 
+// FUNCTIONS - Complementary Filter
+void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z);
+void accel_print_angles(void);
+void accel_loop_angles(void);
+
 #endif
