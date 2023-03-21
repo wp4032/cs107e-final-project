@@ -10,9 +10,9 @@
 
 void math_init(void);
 
-static float _pi;
-static float _pi_2;
-static float _pi_4;
+float _pi;
+float _pi_2;
+float _pi_4;
 
 static float _cos[360];
 static float _sin[360];
@@ -34,11 +34,30 @@ float tan(float x);
 float acos(float x);
 float asin(float x);
 float atan(float x);
+float atan2(float y, float x);
 
 float pwr(float a, signed int b);
 float pwr10(signed int b);
 float sqrt(float a);
 
+int floor(float x);
+int round(float x);
+float decimals(float x);
+float decimals_flipped(float x);
 
+
+// TEST FUNCTIONS:
+// printf("%d\n", (int) (acos(-1.0) * 1000));
+// printf("%d\n", (int) (asin(0.0) * 1000));
+// printf("%d\n", (int) (acos(1.0) * 1000));
+// printf("%d\n", (int) (asin(-1.00) * 1000));
+// printf("%d\n", (int) (asin(0.0) * 1000));
+// printf("%d\n", (int) (asin(1.00) * 1000));
+// printf("%d\n", (int) (atan(-10.200) * 1000));
+// printf("%d\n", (int) (atan(-10.00) * 1000));
+// printf("%d\n", (int) (atan(0.0) * 1000));
+// printf("%d\n", (int) (atan(10.00) * 1000));
+// printf("%d\n", (int) (atan(10.200) * 1000));
+// printf("%d\n", (int) (sqrt(2.14) * tan(270.2)) * 1000);
 
 #endif

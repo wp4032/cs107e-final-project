@@ -6,9 +6,9 @@ void math_init(void) {
     return;
 }
 
-static float _pi = 3.141592653589793;
-static float _pi_2 = 1.5707963267948966;
-static float _pi_4 = 0.7853981633974483;
+float _pi = 3.141592653589793;
+float _pi_2 = 1.5707963267948966;
+float _pi_4 = 0.7853981633974483;
 
 static float _cos[360] = {
     1.0,
@@ -1480,6 +1480,10 @@ float atan(float x) {
     return __atan((int) (x * 100));
 }
 
+float atan2(float y, float x) {
+    return __atan((int) ((y / x) * 100));
+}
+
 
 // FUNCTION: pwr
 // PARAMS: float a, signed int b
@@ -1547,4 +1551,24 @@ float sqrt(float a) {
     return result;
 }
 
+int floor(float x) {
+    return (int) x;
+}
 
+int round(float x) {
+    return floor(x + 0.5);
+}
+
+float decimals(float x) {
+    return x - ((float) floor(x));
+}
+
+float decimals_flipped(float x) {
+    return 1 - decimals(x);
+}
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
