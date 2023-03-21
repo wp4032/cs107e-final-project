@@ -8,6 +8,7 @@
 #include "gpio.h"
 #include "peripherals.h"
 #include "screen.h"
+#include "math.h"
 
 void main(void) 
 {
@@ -17,6 +18,10 @@ void main(void)
     accel_init();
     gpio_init();
     peripherals_init();
+    math_init();
+
+    printf("%d", (int) (pwr(20, 3)));
+    printf("%d", (int) (pwr(0.5, -3)));
 
     print_title();
     print_start_calibration();
