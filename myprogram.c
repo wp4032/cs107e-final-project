@@ -20,26 +20,13 @@ void main(void)
     peripherals_init();
     math_init();
 
-    // printf("%d\n", (int) (acos(-1.0) * 1000));
-    // printf("%d\n", (int) (asin(0.0) * 1000));
-    // printf("%d\n", (int) (acos(1.0) * 1000));
-    // printf("%d\n", (int) (asin(-1.00) * 1000));
-    // printf("%d\n", (int) (asin(0.0) * 1000));
-    // printf("%d\n", (int) (asin(1.00) * 1000));
-    // printf("%d\n", (int) (atan(-10.200) * 1000));
-    // printf("%d\n", (int) (atan(-10.00) * 1000));
-    // printf("%d\n", (int) (atan(0.0) * 1000));
-    // printf("%d\n", (int) (atan(10.00) * 1000));
-    // printf("%d\n", (int) (atan(10.200) * 1000));
-    printf("%d\n", (int) (sqrt(2.14) * tan(270.2)) * 1000);
+    // print_title();
+    // print_start_calibration();
 
-    print_title();
-    print_start_calibration();
+    // controls_init();
 
-    controls_init();
-
-    screen_init();
-    loop_test();
+    // screen_init();
+    accel_loop_angles();
 
     uart_putchar(EOT);
 }
