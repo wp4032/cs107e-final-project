@@ -20,9 +20,6 @@ void main(void)
     peripherals_init();
     math_init();
 
-    printf("%d", (int) (pwr(20, 3)));
-    printf("%d", (int) (pwr(0.5, -3)));
-
     print_title();
     print_start_calibration();
 

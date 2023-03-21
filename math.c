@@ -1506,6 +1506,10 @@ float atan(int x) {
     return _atan[x % 360];
 }
 
+// FUNCTION: pwr
+// PARAMS: float a, signed int b
+// RETURNS: a^b where a is a float and b is an integer
+// CITATION: https://www.codeproject.com/Articles/570700/SquareplusRootplusalgorithmplusforplusC
 float pwr(float a, signed int b) {
     float result = 1.0;
     if (b > 0) {
@@ -1518,6 +1522,53 @@ float pwr(float a, signed int b) {
             result *= 1 / a;
         }
     }
+    return result;
+}
+
+
+// FUNCTION: pwr10
+// PARAMS: signed int b
+// RETURNS: 10^b where b is an integer
+// CITATION: https://www.codeproject.com/Articles/570700/SquareplusRootplusalgorithmplusforplusC
+float pwr10(signed int b) {
+    return pwr(10.0, b);
+}
+
+
+// FUNCTION: sqrt
+// PARAMS: float a
+// RETURNS: √ a where a is a float
+// CITATION: https://www.codeproject.com/Articles/570700/SquareplusRootplusalgorithmplusforplusC
+float sqrt(float a) {
+    float temp = a;
+    float result = 0.0;
+    int max = 8;
+    double j = 1.0;
+
+    for(int i = max; i > 0; i--){
+        if(temp - ((2 * result) + (j * pwr10(i))) * (j * pwr10(i)) >= 0) {
+            while(temp - ((2 * result) + (j * pwr10(i)))*(j * pwr10(i)) >= 0) {
+                j++;
+                if(j >= 10) break;
+            }
+            j--;
+            temp -= ((2 * result) + (j * pwr10(i)))*(j * pwr10(i));
+            result += j * pwr10(i);
+            j = 1.0;
+        }
+    }
+
+    for (int i = 0; i >= 0 - max; i--) {
+        if(temp - ((2 * result) + (j * pwr10(i))) * (j * pwr10(i)) >= 0) {
+            while(temp - ((2 * result) + (j * pwr10(i)))*(j * pwr10(i)) >= 0) {
+                j++;
+            }
+            j--;
+            temp -= ((2 * result) + (j * pwr10(i))) * (j * pwr10(i));
+            result += j * pwr10(i);
+        }
+    }
+
     return result;
 }
 

@@ -14,6 +14,8 @@ float _cos[360];
 float cos(int x);
 
 float pwr(float a, signed int b);
+float pwr10(signed int b);
+float sqrt(float a);
 
 
 
