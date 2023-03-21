@@ -33,7 +33,7 @@ void _cstart(void)
     gpio_write(GPIO_PIN12, 1);
     gpio_write(GPIO_PIN6, 1);
 
-    timer_delay_ms(250);
+    // timer_delay_ms(250);
 
     gpio_write(GPIO_PIN6, 0);
 

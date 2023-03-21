@@ -2,6 +2,7 @@
 #include "font.h"
 #include "printf.h"
 #include "strings.h"
+#include "math.h"
 
 void gl_copy_buffer(void);
 
@@ -157,4 +158,46 @@ unsigned int gl_get_char_height(void)
 unsigned int gl_get_char_width(void)
 {
     return font_get_glyph_width();
+}
+
+
+void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
+    int steep = abs(y1 - y0) > abs(x1 - x0);
+
+    if (steep) {
+        swap(&x1, &y1);
+        swap(&x2, &y2);
+    }
+    if (x0 > x1) {
+        swap(&x1, &x2);
+        swap(&y1, &y2);
+    }
+
+    float delta_x = (float) (x2 - x1);
+    float delta_y = (float) (y2 - y1);
+
+    float slope = delta_y / delta_x; 
+    if (delta_x == 0.0) {
+        slope = 1.0;
+    }
+
+    gl_draw_pixel(x1, y1, c);
+    gl_draw_pixel(x2, y2, c);
+
+    float y_run = y1 + slope;
+
+    if (steep) {
+        for (int x = x1 + 1; x < x2 - 1; x++) {
+            gl_draw_pixel(floor(y_run), x, alpha_color(decimals_flipped(y_run), c));
+            gl_draw_pixel(floor(y_run) + 1, x, alpha_color(decimals(y_run), c));
+            y_run += slope;
+        }
+    }
+    else {
+        for (int x = x1 + 1; x < x2 - 1; x++) {
+            gl_draw_pixel(x, floor(y_run), alpha_color(decimals_flipped(y_run), c));
+            gl_draw_pixel(x, floor(y_run) + 1, alpha_color(decimals(y_run), c));
+            y_run += slope;
+        } 
+    }
 }
