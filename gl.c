@@ -161,6 +161,24 @@ unsigned int gl_get_char_width(void)
 }
 
 
+color_t brighten_color(color_t c, float alpha) {
+    // If invalid alpha 
+    if (alpha > 1.0 || alpha < 0.0) {
+        return GL_BLACK;
+    }
+    
+    unsigned char b = (c | 0xff); // red in 2nd most significant bit
+    unsigned char g = (c | 0xff00) >> 8; // red in 2nd most significant bit
+    unsigned char r = (c | 0xff0000) >> 16; // red in 2nd most significant bit
+
+    b = ((0xff - b) * alpha) + b;
+    g = ((0xff - g) * alpha) + g;
+    r = ((0xff - r) * alpha) + r;
+
+    return gl_color(r, g, b);
+}
+
+
 void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
     int steep = abs(y1 - y0) > abs(x1 - x0);
 
@@ -188,15 +206,15 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
 
     if (steep) {
         for (int x = x1 + 1; x < x2 - 1; x++) {
-            gl_draw_pixel(floor(y_run), x, alpha_color(decimals_flipped(y_run), c));
-            gl_draw_pixel(floor(y_run) + 1, x, alpha_color(decimals(y_run), c));
+            gl_draw_pixel(floor(y_run), x, brighten_color(decimals_flipped(y_run), c));
+            gl_draw_pixel(floor(y_run) + 1, x, brighten_color(decimals(y_run), c));
             y_run += slope;
         }
     }
     else {
         for (int x = x1 + 1; x < x2 - 1; x++) {
-            gl_draw_pixel(x, floor(y_run), alpha_color(decimals_flipped(y_run), c));
-            gl_draw_pixel(x, floor(y_run) + 1, alpha_color(decimals(y_run), c));
+            gl_draw_pixel(x, floor(y_run), brighten_color(decimals_flipped(y_run), c));
+            gl_draw_pixel(x, floor(y_run) + 1, brighten_color(decimals(y_run), c));
             y_run += slope;
         } 
     }
