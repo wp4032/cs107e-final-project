@@ -249,6 +249,7 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c);
  */
 void gl_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, color_t c);
 
+void gl_copy_buffer(void);
 
 void gl_draw_circle_outline(int x, int y, int r, color_t c);
 void gl_draw_circle_filled(int x, int y, int r, color_t c);

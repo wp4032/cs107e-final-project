@@ -8,7 +8,7 @@ static color_t back_color;
 
 void screen_init(void) {
   // Initialize global color variables
-  back_color = GL_BLACK;
+  back_color = GL_BLUE;
 
   // Initializes the graphics library and frame buffer
   gl_init(SCREEN_X, SCREEN_Y, GL_DOUBLEBUFFER);

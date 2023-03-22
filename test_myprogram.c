@@ -52,17 +52,28 @@ void test_draw(void) {
     timer_delay(10);
 }
 
+void test_messages(void) {
+    // accel_loop_angles();
+
+    screen_init();
+    screen_clear();
+
+    print_start_calibration();
+}
+
 void main(void) 
 {
     uart_init();
-    // timer_init();
-    // i2c_init();
-    // gpio_init();
-    // peripherals_init();
-    // math_init();
+    timer_init();
+    i2c_init();
+    accel_init();
+    gpio_init();
+    peripherals_init();
+    math_init();
 
     // test_floor();
-    test_draw();
+    // test_draw();
+    test_messages();
 
     uart_putchar(EOT);
 }

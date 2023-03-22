@@ -10,16 +10,22 @@
 
 void math_init(void);
 
-float _pi;
-float _pi_2;
-float _pi_4;
+const float _pi;
+const float _pi_2;
+const float _pi_4;
 
-static float _cos[360];
-static float _sin[360];
-static float _tan[360];
-static float _acos[201];
-static float _asin[201];
-static float _atan[2001];
+typedef struct {
+  float x;
+  float y;
+  float z;
+} vector_t;
+
+// static float _cos[360];
+// static float _sin[360];
+// static float _tan[360];
+// static float _acos[201];
+// static float _asin[201];
+// static float _atan[2001];
 
 float __cos(int x);
 float __sin(int x);
@@ -44,7 +50,14 @@ int floor(float x);
 int round(float x);
 float decimals(float x);
 float decimals_flipped(float x);
+void swap(int *a, int *b);
+unsigned int abs(signed int a);
 
+float v_dot(vector_t a, vector_t b);
+vector_t v_add(vector_t a, vector_t b);
+vector_t v_sub(vector_t a, vector_t b);
+vector_t v_multiply(vector_t a, float b);
+vector_t v_divide(vector_t a, float b);
 
 // TEST FUNCTIONS:
 // printf("%d\n", (int) (acos(-1.0) * 1000));

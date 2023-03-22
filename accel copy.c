@@ -110,14 +110,26 @@ void gyro_xyz(short *x, short *y, short *z) {
 // RETURNS: uses a complmentary filter for sensor fusion of the acclerometer and gyroscope
 // CITATION: https://github.com/seanboe/SimpleFusion/blob/master/src/simpleFusion.cpp
 void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z) {
+    // int x = gyro_get_x();
+    // int y = gyro_get_y();
+    // int z = gyro_get_z();
+
     float pitchAccel = atan2(accel_get_x(), sqrt(pwr(accel_get_y(), 2) + pwr(accel_get_z(), 2)));
     float rollAccel = atan2(accel_get_y(), sqrt(pwr(accel_get_x(), 2) + pwr(accel_get_z(), 2)));
+    // float yawAccel = atan2(-1 * accel_get_z(), sqrt(pwr(accel_get_x(), 2) + pwr(accel_get_y(), 2)));
+    // printf("x: %d, y: %d, z: %d\n", x/16, y/16, z/16);
+    // printf("p: %d, r: %d, y: %d\n", (int) (pitchAccel * 100), (int) (rollAccel * 100), (int) (yawAccel * 100));
+    // printf("p: %d, r: %d, y: %d\n", (int) ((_pi) * 1000), (int) ((_pi) * 1000), (int) ((_pi) * 1000));
+    // printf("p: %d, r: %d, y: %d\n", (int) (pitchAccel * (180.0 / _pi)), (int) (rollAccel * (180.0 / _pi)), (int) (yawAccel * (180.0 / _pi)));
 
     pitch = gyro_alpha * (pitch + ((-1 * gyro_get_y() / 1600.0) * (1.00 / refresh_rate))) + (1.00 - gyro_alpha) * pitchAccel;
     roll = gyro_alpha * (roll + ((gyro_get_x() / 1600.0) * (1.00 / refresh_rate))) + (1.00 - gyro_alpha) * rollAccel;
+    // yaw = gyro_alpha * (yaw + ((gyro_get_z() / 1600.0) * (1.00 / refresh_rate))) + (1.00 - gyro_alpha) * yawAccel;
+    // printf("pp: %d, rr: %d, yy: %d\n", (int) (pitch * 100), (int) (roll * 100), (int) (yaw * 100));
 
     *angle_x = pitch * (180 / _pi);
     *angle_y = roll * (180 / _pi);
+    // *angle_z = yaw * (180 / _pi);
 }
 
 void accel_print_angles(void) {
@@ -130,6 +142,7 @@ void accel_print_angles(void) {
     }
 
     printf("pitch_x: %d, roll_y: %d\n", (int) (angle_x * 1000), (int) (angle_y * 1000));
+    // printf("theta_x: %d, theta_y: %d, theta_z: %d\n", (int) (angle_x * 1000), (int) (angle_y * 1000), (int) (angle_z * 1000));
 }
 
 void accel_loop_angles(void) {

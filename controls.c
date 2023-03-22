@@ -6,6 +6,7 @@
 #include "peripherals.h"
 #include "controls.h"
 #include "settings.h"
+#include "math.h"
 
 static signed short accel_x_offset = 0;
 static signed short accel_y_offset = 0;
@@ -32,17 +33,6 @@ void controls_init(void) {
   clear_accel();
   clear_gyro();
   // calibrate();
-}
-
-
-// FUNCTION: abs
-// PARAMS: signed int a
-// RETURNS: the absolute value of a signed integer
-static unsigned int abs(signed int a) {
-  if (a < 0) {
-    return a * -1;
-  }
-  return a;
 }
 
 
