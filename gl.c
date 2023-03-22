@@ -167,26 +167,26 @@ color_t brighten_color(color_t c, float alpha) {
         return GL_BLACK;
     }
     
-    unsigned char b = (c | 0xff); // red in 2nd most significant bit
-    unsigned char g = (c | 0xff00) >> 8; // red in 2nd most significant bit
-    unsigned char r = (c | 0xff0000) >> 16; // red in 2nd most significant bit
+    unsigned char b = (c & 0xff); // red in 2nd most significant bit
+    unsigned char g = (c & 0xff00) >> 8; // red in 2nd most significant bit
+    unsigned char r = (c & 0xff0000) >> 16; // red in 2nd most significant bit
 
-    b = ((0xff - b) * alpha) + b;
-    g = ((0xff - g) * alpha) + g;
-    r = ((0xff - r) * alpha) + r;
+    b = ((0xff - b) * 0.25 * alpha) + b;
+    g = ((0xff - g) * 0.25 * alpha) + g;
+    r = ((0xff - r) * 0.25 * alpha) + r;
 
     return gl_color(r, g, b);
 }
 
 
 void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
-    int steep = abs(y1 - y0) > abs(x1 - x0);
+    int steep = abs(y2 - y1) > abs(x2 - x1);
 
     if (steep) {
         swap(&x1, &y1);
         swap(&x2, &y2);
     }
-    if (x0 > x1) {
+    if (x2 < x1) {
         swap(&x1, &x2);
         swap(&y1, &y2);
     }
@@ -199,23 +199,98 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
         slope = 1.0;
     }
 
-    gl_draw_pixel(x1, y1, c);
-    gl_draw_pixel(x2, y2, c);
-
     float y_run = y1 + slope;
 
     if (steep) {
-        for (int x = x1 + 1; x < x2 - 1; x++) {
-            gl_draw_pixel(floor(y_run), x, brighten_color(decimals_flipped(y_run), c));
-            gl_draw_pixel(floor(y_run) + 1, x, brighten_color(decimals(y_run), c));
+        printf("x1:%d, y1:%d, x2:%d, y2:%d", x1, y1, x2, y2);
+        for (int x = x1; x < x2; x++) {
+            gl_draw_pixel(floor(y_run), x, brighten_color(c, decimals_flipped(y_run)));
+            gl_draw_pixel(floor(y_run) + 1, x, brighten_color(c, decimals(y_run)));
             y_run += slope;
         }
     }
     else {
-        for (int x = x1 + 1; x < x2 - 1; x++) {
-            gl_draw_pixel(x, floor(y_run), brighten_color(decimals_flipped(y_run), c));
-            gl_draw_pixel(x, floor(y_run) + 1, brighten_color(decimals(y_run), c));
+        printf("x1:%d, y1:%d, x2:%d, y2:%d", x1, y1, x2, y2);
+        for (int x = x1; x < x2; x++) {
+            gl_draw_pixel(x, floor(y_run), brighten_color(c, decimals_flipped(y_run)));
+            gl_draw_pixel(x, floor(y_run) + 1, brighten_color(c, decimals(y_run)));
             y_run += slope;
         } 
     }
+}
+
+
+// FUNCTION: gl_draw_circle_outline
+// PARAMS: int x, int y, int r, color_t c
+// RETURNS: draws an outlined circle at (x, y) with radius r and color c
+void gl_draw_circle_outline(int x, int y, int r, color_t c) {
+    gl_draw_circle(x, y, r, c, 0);
+}
+
+
+// FUNCTION: gl_draw_circle_filled
+// PARAMS: int x, int y, int r, color_t c
+// RETURNS: draws a filled in circle at (x, y) with radius r and color c
+void gl_draw_circle_filled(int x, int y, int r, color_t c) {
+    gl_draw_circle(x, y, r, c, 1);
+}
+
+// FUNCTION: gl_draw_circle_outline
+// PARAMS: int x, int y, int r, color_t c, int filled
+// RETURNS: draws an outline of a circle at (x, y) with radius r and color c
+// if filled == 0 --> will draw outline; if filled == 1 --> will draw filled
+// helper function for simpler functions (gl_draw_circle_filled & gl_draw_circle_outline)
+// CITATION: https://www.gatevidyalay.com/bresenham-circle-drawing-algorithm/
+static void gl_draw_circle(int x, int y, int r, color_t c, int filled) {
+    if (filled > 1 || filled < 0) {
+        return;
+    }
+
+    int x_0 = 0;
+    int y_0 = r;
+    int p = 3 - (2 * r);
+
+    while (x_0 <= y_0) {
+        if (filled == 0) {
+            gl_draw_circle_octant(x_0, y_0, x, y, c);
+        }
+        if (filled == 1) {
+            gl_draw_circle_octant_filled(x_0, y_0, x, y, c);
+        }
+        if (p < 0) {
+            x_0++;
+            p += (4 * x_0) + 6;
+        }
+        else if (p >= 0) {
+            x_0++;
+            y_0--;
+            p += (4 * (x_0 - x_0)) + 10;
+        }
+    }
+}
+
+
+// FUNCTION: gl_draw_circle_octant
+// PARAMS: int x, int y, int center_x, int center_y, color_t c
+// RETURNS: when drawing a pixel around a center x and center y, it will then draw in other octants
+// CITATION: https://www.cs.helsinki.fi/group/goa/mallinnus/ympyrat/ymp1.html
+void gl_draw_circle_octant(int x, int y, int center_x, int center_y, color_t c) {
+    gl_draw_pixel(center_x + x, center_y + y, c);
+    gl_draw_pixel(center_x + y, center_y + x, c);
+    gl_draw_pixel(center_x + y, center_y - x, c);
+    gl_draw_pixel(center_x + x, center_y - y, c);
+    gl_draw_pixel(center_x - y, center_y + x, c);
+    gl_draw_pixel(center_x - x, center_y + y, c);
+    gl_draw_pixel(center_x - x, center_y - y, c);
+    gl_draw_pixel(center_x - y, center_y - x, c);
+}
+
+// FUNCTION: gl_draw_circle_octant_filled
+// PARAMS: int x, int y, int center_x, int center_y, color_t c
+// RETURNS: when drawing a pixel around a center x and center y, it will then draw in other octants
+// CITATION: https://www.cs.helsinki.fi/group/goa/mallinnus/ympyrat/ymp1.html
+void gl_draw_circle_octant_filled(int x, int y, int center_x, int center_y, color_t c) {
+    gl_draw_circle_octant(x, y, center_x, center_y, c);
+    gl_draw_line(center_x - x, center_y + y, center_x + x, center_y, c);
+    gl_draw_line(center_x - x, center_y - y, center_x - x, center_y, c);
 }
