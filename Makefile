@@ -5,7 +5,7 @@
 
 RUN_PROGRAM = myprogram.bin
 TEST_PROGRAM = test_myprogram.bin
-SOURCES = $(PROGRAM:.bin=.c) cstart.c start.s LSM6DS33.c accel.c messages.c controls.c peripherals.c screen.c math.c gl.c
+SOURCES = $(PROGRAM:.bin=.c) cstart.c start.s LSM6DS33.c accel.c messages.c controls.c peripherals.c screen.c math.c gl.c title.c
 
 PROGRAMS = $(RUN_PROGRAM) $(TEST_PROGRAM)
 

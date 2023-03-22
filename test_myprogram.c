@@ -11,6 +11,7 @@
 #include "math.h"
 #include "assert.h"
 #include "gl.h"
+#include "title.h"
 
 
 void test_floor(void) {
@@ -61,6 +62,13 @@ void test_messages(void) {
     print_start_calibration();
 }
 
+void test_title(void) {
+    screen_init();
+    screen_clear();
+    
+    draw_title();
+}
+
 void main(void) 
 {
     uart_init();
@@ -73,7 +81,8 @@ void main(void)
 
     // test_floor();
     // test_draw();
-    test_messages();
+    // test_messages();
+    test_title();
 
     uart_putchar(EOT);
 }
