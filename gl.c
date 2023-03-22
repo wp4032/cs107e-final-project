@@ -202,7 +202,6 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
     float y_run = y1 + slope;
 
     if (steep) {
-        printf("x1:%d, y1:%d, x2:%d, y2:%d", x1, y1, x2, y2);
         for (int x = x1; x < x2; x++) {
             gl_draw_pixel(floor(y_run), x, brighten_color(c, decimals_flipped(y_run)));
             gl_draw_pixel(floor(y_run) + 1, x, brighten_color(c, decimals(y_run)));
@@ -210,7 +209,6 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
         }
     }
     else {
-        printf("x1:%d, y1:%d, x2:%d, y2:%d", x1, y1, x2, y2);
         for (int x = x1; x < x2; x++) {
             gl_draw_pixel(x, floor(y_run), brighten_color(c, decimals_flipped(y_run)));
             gl_draw_pixel(x, floor(y_run) + 1, brighten_color(c, decimals(y_run)));
@@ -264,7 +262,7 @@ static void gl_draw_circle(int x, int y, int r, color_t c, int filled) {
         else if (p >= 0) {
             x_0++;
             y_0--;
-            p += (4 * (x_0 - x_0)) + 10;
+            p += (4 * (x_0 - y_0)) + 10;
         }
     }
 }
@@ -291,6 +289,8 @@ void gl_draw_circle_octant(int x, int y, int center_x, int center_y, color_t c) 
 // CITATION: https://www.cs.helsinki.fi/group/goa/mallinnus/ympyrat/ymp1.html
 void gl_draw_circle_octant_filled(int x, int y, int center_x, int center_y, color_t c) {
     gl_draw_circle_octant(x, y, center_x, center_y, c);
-    gl_draw_line(center_x - x, center_y + y, center_x + x, center_y, c);
-    gl_draw_line(center_x - x, center_y - y, center_x - x, center_y, c);
+    gl_draw_line(center_x - x, center_y + y, center_x + x, center_y + y, c);
+    gl_draw_line(center_x - x, center_y - y, center_x + x, center_y - y, c);
+    gl_draw_line(center_x - y, center_y + x, center_x + y, center_y + x, c);
+    gl_draw_line(center_x - y, center_y - x, center_x + y, center_y - x, c);
 }
