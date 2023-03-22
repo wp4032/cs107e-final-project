@@ -18,7 +18,7 @@ void print_title(void) {
 }
 
 void print_start_calibration(void) {
-  print_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);           // Point to center
+  print_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);             // Point to center
   print_calibration_message(15, 15, 15, 1);                                 // Point to top left
   print_calibration_message(SCREEN_X - 15, 15, 15, 2);                      // Point to top right
   print_calibration_message(15, SCREEN_Y - 15, 15, 3);                      // Point to bottom left

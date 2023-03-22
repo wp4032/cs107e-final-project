@@ -105,11 +105,11 @@ void gyro_xyz(short *x, short *y, short *z) {
 }
 
 
-// FUNCTION: complementary_filter
+// FUNCTION: accel_complementary_filter
 // PARAMS: short *x, short *y, short *z
 // RETURNS: uses a complmentary filter for sensor fusion of the acclerometer and gyroscope
 // CITATION: https://github.com/seanboe/SimpleFusion/blob/master/src/simpleFusion.cpp
-void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z) {
+void accel_complementary_filter(float *angle_x, float *angle_y) {
     float pitchAccel = atan2(accel_get_x(), sqrt(pwr(accel_get_y(), 2) + pwr(accel_get_z(), 2)));
     float rollAccel = atan2(accel_get_y(), sqrt(pwr(accel_get_x(), 2) + pwr(accel_get_z(), 2)));
 
@@ -120,18 +120,29 @@ void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z) 
     *angle_y = roll * (180 / _pi);
 }
 
+// FUNCTION: accel_print_angles
+// PARAMS: void
+// RETURNS: prints the pitch_x and roll_y angles on the accelerometer
 void accel_print_angles(void) {
     float angle_x = 0.0;
     float angle_y = 0.0;
-    float angle_z = 0.0;
 
     for (int i = 1; i < 10; i++) {
-        accel_complementary_filter(&angle_x, &angle_y, &angle_z);
+        accel_complementary_filter(&angle_x, &angle_y);
     }
 
     printf("pitch_x: %d, roll_y: %d\n", (int) (angle_x * 1000), (int) (angle_y * 1000));
 }
 
+void accel_get_angles(float *pitch_x, float *roll_y) {
+    accel_complementary_filter(pitch_x, roll_y);
+
+    printf("pitch_x: %d, roll_y: %d\n", (int) (*pitch_x * 1000), (int) (*roll_y * 1000));
+}
+
+// FUNCTION: accel_loop_angles
+// PARAMS: void
+// RETURNS: prints the pitch_x and roll_y angles over and over again
 void accel_loop_angles(void) {
     while(1) {
         timer_delay_ms(10);

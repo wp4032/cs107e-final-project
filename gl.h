@@ -253,7 +253,6 @@ void gl_copy_buffer(void);
 
 void gl_draw_circle_outline(int x, int y, int r, color_t c);
 void gl_draw_circle_filled(int x, int y, int r, color_t c);
-static void gl_draw_circle(int x, int y, int r, color_t c, int filled);
 void gl_draw_circle_octant(int x, int y, int center_x, int center_y, color_t c);
 void gl_draw_circle_octant_filled(int x, int y, int center_x, int center_y, color_t c);
 

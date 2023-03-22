@@ -29,5 +29,6 @@ void gyro_xyz(short *x, short *y, short *z);
 void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z);
 void accel_print_angles(void);
 void accel_loop_angles(void);
+void accel_get_angles(float *pitch_x, float *roll_y);
 
 #endif

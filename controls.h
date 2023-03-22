@@ -30,6 +30,11 @@ typedef struct {
 } control_gyro_t;
 
 typedef struct {
+  signed short pitch_x;
+  signed short roll_y;
+} control_angles_t;
+
+typedef struct {
   enum { EMG_INACTIVE, EMG_ACTIVE } action;
   signed int x;
   signed int y;

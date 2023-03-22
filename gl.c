@@ -217,23 +217,7 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
     }
 }
 
-
-// FUNCTION: gl_draw_circle_outline
-// PARAMS: int x, int y, int r, color_t c
-// RETURNS: draws an outlined circle at (x, y) with radius r and color c
-void gl_draw_circle_outline(int x, int y, int r, color_t c) {
-    gl_draw_circle(x, y, r, c, 0);
-}
-
-
-// FUNCTION: gl_draw_circle_filled
-// PARAMS: int x, int y, int r, color_t c
-// RETURNS: draws a filled in circle at (x, y) with radius r and color c
-void gl_draw_circle_filled(int x, int y, int r, color_t c) {
-    gl_draw_circle(x, y, r, c, 1);
-}
-
-// FUNCTION: gl_draw_circle_outline
+// FUNCTION: gl_draw_circle
 // PARAMS: int x, int y, int r, color_t c, int filled
 // RETURNS: draws an outline of a circle at (x, y) with radius r and color c
 // if filled == 0 --> will draw outline; if filled == 1 --> will draw filled
@@ -265,6 +249,21 @@ static void gl_draw_circle(int x, int y, int r, color_t c, int filled) {
             p += (4 * (x_0 - y_0)) + 10;
         }
     }
+}
+
+// FUNCTION: gl_draw_circle_outline
+// PARAMS: int x, int y, int r, color_t c
+// RETURNS: draws an outlined circle at (x, y) with radius r and color c
+void gl_draw_circle_outline(int x, int y, int r, color_t c) {
+    gl_draw_circle(x, y, r, c, 0);
+}
+
+
+// FUNCTION: gl_draw_circle_filled
+// PARAMS: int x, int y, int r, color_t c
+// RETURNS: draws a filled in circle at (x, y) with radius r and color c
+void gl_draw_circle_filled(int x, int y, int r, color_t c) {
+    gl_draw_circle(x, y, r, c, 1);
 }
 
 

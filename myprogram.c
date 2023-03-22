@@ -19,14 +19,12 @@ void main(void)
     gpio_init();
     peripherals_init();
     math_init();
+    screen_init();
 
-    // print_title();
-    // print_start_calibration();
+    print_title();
 
-    // controls_init();
-
-    // screen_init();
-    accel_loop_angles();
+    controls_init();
+    // accel_loop_angles();
 
     uart_putchar(EOT);
 }
