@@ -98,20 +98,20 @@ void calibrate(void) {
   accel_xyz(&accel_x_offset, &accel_y_offset, &accel_z_offset);
   printf("x:%d, y:%d, z:%d\n", accel_x_offset, accel_y_offset, accel_z_offset);
 
-  print_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);             // Point to center
-  calibrate_flat();                                                         // Clears the gyroscope and accelerometer to be flat
+  draw_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);             // Point to center
+  calibrate_flat();                                                        // Clears the gyroscope and accelerometer to be flat
   accel_get_angles(&flat_pitch, &roll_y);
 
-  print_calibration_message(15, 15, 15, 1);                                 // Point to top left
+  draw_calibration_message(15, 15, 15, 1);                                 // Point to top left
   accel_get_angles(&top_left_pitch, &roll_y);
 
-  print_calibration_message(SCREEN_X - 15, 15, 15, 2);                      // Point to top right
+  draw_calibration_message(SCREEN_X - 15, 15, 15, 2);                      // Point to top right
   accel_get_angles(&top_right_pitch, &roll_y);
 
-  print_calibration_message(15, SCREEN_Y - 15, 15, 3);                      // Point to bottom left
+  draw_calibration_message(15, SCREEN_Y - 15, 15, 3);                      // Point to bottom left
   accel_get_angles(&bottom_left_pitch, &roll_y);
 
-  print_calibration_message(SCREEN_X - 15, SCREEN_Y - 15, 15, 4);           // Point to bottom right
+  draw_calibration_message(SCREEN_X - 15, SCREEN_Y - 15, 15, 4);           // Point to bottom right
   accel_get_angles(&bottom_right_pitch, &roll_y);
 
   average_top_pitch = (top_left_pitch + top_right_pitch) / 2.0;

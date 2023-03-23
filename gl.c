@@ -3,6 +3,8 @@
 #include "printf.h"
 #include "strings.h"
 #include "math.h"
+#include "settings.h"
+#include "strings.h"
 
 void gl_copy_buffer(void);
 
@@ -150,6 +152,13 @@ void gl_draw_string(int x, int y, const char* str, color_t c)
     }
 }
 
+void gl_draw_string_center(const char* str, color_t c) {
+    int string_width = strlen(str) * gl_get_char_width();
+    int string_height = gl_get_char_height();
+
+    gl_draw_string((SCREEN_X / 2) - (string_width / 2), (SCREEN_Y / 2) - (string_height / 2), str, c);
+}
+
 unsigned int gl_get_char_height(void)
 {
     return font_get_glyph_height();
@@ -201,7 +210,12 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
 
     float y_run = y1 + slope;
 
-    if (steep) {
+    if (y2 - y1 == 0) {
+        for (int x = x1; x <= x2; x++) {
+            gl_draw_pixel(x, floor(y_run), c);
+        }
+    }
+    else if (steep) {
         for (int x = x1; x < x2; x++) {
             gl_draw_pixel(floor(y_run), x, brighten_color(c, decimals_flipped(y_run)));
             gl_draw_pixel(floor(y_run) + 1, x, brighten_color(c, decimals(y_run)));
