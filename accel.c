@@ -5,8 +5,6 @@
 #include "LSM6DS33.h"
 #include "assert.h"
 #include "math.h"
-#include "armtimer.h"
-#include "interrupts.h"
 
 // For complementary filter
 static float refresh_rate = 100.0; // Hz
@@ -24,11 +22,6 @@ static void handle_accel(unsigned int pc, void *aux_data);
 void accel_init(void) {
     i2c_init();
     lsm6ds33_init();
-    armtimer_init(30000);
-    armtimer_enable();
-    armtimer_enable_interrupts();
-    interrupts_register_handler(INTERRUPTS_BASIC_ARM_TIMER_IRQ, handle_accel, NULL);
-    interrupts_enable_source(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
 
     assert(lsm6ds33_check_whoami());
 }
@@ -152,12 +145,6 @@ void accel_get_angles(float *pitch_x, float *roll_y) {
 void accel_loop_angles(void) {
     while(1) {
         timer_delay_ms(10);
-        accel_print_angles();
-    }
-}
-
-static void handle_accel(unsigned int pc, void *aux_data) {
-    if(armtimer_check_and_clear_interrupt()) {
         accel_print_angles();
     }
 }

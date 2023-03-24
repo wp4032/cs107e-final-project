@@ -7,6 +7,8 @@
 #include "controls.h"
 #include "settings.h"
 #include "math.h"
+#include "armtimer.h"
+#include "interrupts.h"
 
 static signed short accel_x_offset = 0;
 static signed short accel_y_offset = 0;
@@ -23,9 +25,14 @@ static float bottom_right_pitch = 0.0;
 static float average_top_pitch = 0.0;
 static float average_bottom_pitch = 0.0;
 
+control_accel_t accel;
+control_gyro_t gyro;
+control_angles_t angles;
+
 static control_limits_t limits;
 static control_action_t control;
 
+static void handle_controls(unsigned int pc, void *aux_data);
 
 // FUNCTION: controls_init
 // PARAMS: void
@@ -35,6 +42,12 @@ static control_action_t control;
 // (3) setting the sensitivity and threshold of activation of the control
 // (4) intializes current measurement and starts calibration process
 void controls_init(void) {
+  armtimer_init(30000);
+  armtimer_enable();
+  armtimer_enable_interrupts();
+  interrupts_register_handler(INTERRUPTS_BASIC_ARM_TIMER_IRQ, handle_controls, NULL);
+  interrupts_enable_source(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
+
   set_limits(SCREEN_X, SCREEN_Y);
   set_location(SCREEN_X, SCREEN_Y);
   set_sensitivity_threshold(SENSITIVITY, THRESHOLD);
@@ -93,26 +106,21 @@ static void calibrate_flat(void) {
 // RETURNS: starts a calibration process that helps intialize its beginning position; it will ask user
 // to point the device towards the screen and an error will illuminate if calibration doesn't work
 void calibrate(void) {
-  float roll_y = 0.0;
-
-  accel_xyz(&accel_x_offset, &accel_y_offset, &accel_z_offset);
-  printf("x:%d, y:%d, z:%d\n", accel_x_offset, accel_y_offset, accel_z_offset);
-
   draw_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);             // Point to center
   calibrate_flat();                                                        // Clears the gyroscope and accelerometer to be flat
-  accel_get_angles(&flat_pitch, &roll_y);
+  flat_pitch = angles.pitch_x;
 
   draw_calibration_message(15, 15, 15, 1);                                 // Point to top left
-  accel_get_angles(&top_left_pitch, &roll_y);
+  top_left_pitch = angles.pitch_x;
 
   draw_calibration_message(SCREEN_X - 15, 15, 15, 2);                      // Point to top right
-  accel_get_angles(&top_right_pitch, &roll_y);
+  top_right_pitch = angles.pitch_x;
 
   draw_calibration_message(15, SCREEN_Y - 15, 15, 3);                      // Point to bottom left
-  accel_get_angles(&bottom_left_pitch, &roll_y);
+  bottom_left_pitch = angles.pitch_x;
 
   draw_calibration_message(SCREEN_X - 15, SCREEN_Y - 15, 15, 4);           // Point to bottom right
-  accel_get_angles(&bottom_right_pitch, &roll_y);
+  bottom_right_pitch = angles.pitch_x;
 
   average_top_pitch = (top_left_pitch + top_right_pitch) / 2.0;
   average_bottom_pitch = (bottom_left_pitch + bottom_right_pitch) / 2.0;
@@ -126,13 +134,16 @@ void calibrate(void) {
 // RETURNS: clears the current acceleration in the accelerometer and sets that orientation as the base point
 // Only call when in the center 
 int clear_accel(void) {
-  accel_xyz(&accel_x_offset, &accel_y_offset, &accel_z_offset);
+  accel_x_offset = accel.accel_x;
+  accel_y_offset = accel.accel_y;
+  accel_z_offset = accel.accel_z;
+
   // If orientation is not flat in the y direction or the z direction --> will return false
   // Acceleration in z is always gravity (980 mg)
   // X orientation has some more tolerance 
-  accel_z_offset -= (980 * 16);
-  printf("x:%d, y:%d, z:%d\n", accel_x_offset/16, accel_y_offset/16, accel_z_offset/16);
-  return (abs(accel_x_offset/16) > 250 || abs(accel_y_offset/16) > 100 || abs(accel_z_offset/16) > 100);
+  accel_z_offset -= 980;
+  printf("x:%d, y:%d, z:%d\n", accel_x_offset, accel_y_offset, accel_z_offset);
+  return (abs(accel_x_offset) > 250 || abs(accel_y_offset) > 100 || abs(accel_z_offset) > 100);
 }
 
 
@@ -140,50 +151,41 @@ int clear_accel(void) {
 // PARAMS: void
 // RETURNS: clears the current gyroscope measurements in the accelerometer and sets that orientation as the base point
 int clear_gyro(void) {
-  gyro_xyz(&gyro_x_offset, &gyro_y_offset, &gyro_z_offset);
+  gyro_x_offset = gyro.gyro_x;
+  gyro_y_offset = gyro.gyro_y;
+  gyro_z_offset = gyro.gyro_z;
   // If angular rotation in x, y, z direction is not still --> will return false
-  return (abs(gyro_x_offset/16) > 50 || abs(gyro_y_offset/16) > 50 || abs(gyro_z_offset/16) > 50);
+  return (abs(gyro_x_offset) > 50 || abs(gyro_y_offset) > 50 || abs(gyro_z_offset) > 50);
 }
 
 
 // FUNCTION: control_read_accel
 // PARAMS: void
 // RETURNS: gets a reading of the accelerometer and returns a control_accel_t struct
-control_accel_t control_read_accel(void) {
-  control_accel_t result = {
-    (accel_get_x() - accel_x_offset)/16,
-    (accel_get_y() - accel_y_offset)/16, 
-    (accel_get_z() - accel_z_offset)/16
-  };
+void control_read_accel(void) {
+  accel.accel_x = (accel_get_x() - accel_x_offset)/16;
+  accel.accel_y = (accel_get_y() - accel_y_offset)/16; 
+  accel.accel_z = (accel_get_z() - accel_z_offset)/16;
   // Uncomment below to visualize the current acceleration
-  // printf("accel=(%d,%d,%d)\n", result.accel_x, result.accel_y, result.accel_z);
-  return result;
+  // printf("accel=(%d,%d,%d)\n", accel.accel_x, accel.accel_y, accel.accel_z);
 }
 
 
 // FUNCTION: control_read_gyro
 // PARAMS: void
 // RETURNS: gets a reading of the gyroscope and returns a control_gyro_t struct
-control_gyro_t control_read_gyro(void) {
-  control_gyro_t result = {
-    (gyro_get_x() - gyro_x_offset)/16, 
-    (gyro_get_y() - gyro_y_offset)/16, 
-    (gyro_get_z() - gyro_z_offset)/16,
-  };
+void control_read_gyro(void) {
+  gyro.gyro_x = (gyro_get_x() - gyro_x_offset)/16;
+  gyro.gyro_y = (gyro_get_y() - gyro_y_offset)/16; 
+  gyro.gyro_z = (gyro_get_z() - gyro_z_offset)/16;
   // Uncomment below to visualize the current angular velocity
-  // printf("gyro=(%d,%d,%d)\n", result.gyro_x, result.gyro_y, result.gyro_z);
-  return result;
+  // printf("gyro=(%d,%d,%d)\n", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z);
 }
 
-control_angles_t control_read_angles(void) {
-  float pitch_x = 0.0;
-  float roll_y = 0.0;
-  accel_get_angles(&pitch_x, &roll_y);
-  control_angles_t result = {
-    pitch_x,
-    roll_y,
-  };
-  return result;
+void control_read_angles(void) {
+  accel_get_angles(&(angles.pitch_x), &(angles.roll_y));
+  // Uncomment below to visualize the pitch and roll angles
+  // printf("pitch_x: %d, roll_y: %d\n", (int) (angles.pitch_x * 1000), (int) (angles.roll_y * 1000));
 }
 
 // FUNCTION: control_read_action
@@ -191,10 +193,6 @@ control_angles_t control_read_angles(void) {
 // RETURNS: turns the accelerometer and gyroscope measurements into motion in the x,y plane
 // NOTE: for us, the x and y frame will be in the y and z frame of the accelerometer respectively
 void control_read_action(control_action_t *ctrl) {
-  control_accel_t accel = control_read_accel();
-  control_gyro_t gyro = control_read_gyro();
-  control_angles_t angles = control_read_angles();
-
   // Sees if the current acceleration is above the threshold acceleration; if so, will get an adjusted 
   // x, y movement based on sensitivity.
   signed int delta_y = abs(accel.accel_y) > ctrl->threshold ? accel.accel_y / ctrl->sensitivity : 0;
@@ -223,4 +221,12 @@ void loop(void) {
   control_read_action(&control);
   timer_delay_ms(5);
   success_led_off();
+}
+
+static void handle_controls(unsigned int pc, void *aux_data) {
+  if (armtimer_check_and_clear_interrupt()) {
+    control_read_accel();
+    control_read_gyro();
+    control_read_angles();
+  }
 }

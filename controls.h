@@ -30,8 +30,8 @@ typedef struct {
 } control_gyro_t;
 
 typedef struct {
-  signed short pitch_x;
-  signed short roll_y;
+  float pitch_x;
+  float roll_y;
 } control_angles_t;
 
 typedef struct {
@@ -58,8 +58,9 @@ void calibrate(void);
 int clear_accel(void);
 int clear_gyro(void);
 
-control_accel_t control_read_accel(void);
-control_gyro_t control_read_gyro(void);
+void control_read_accel(void);
+void ontrol_read_gyro(void);
+void control_read_angles(void);
 void control_read_action(control_action_t *ctrl);
 control_action_t control_get_action(void);
 
