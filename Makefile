@@ -3,15 +3,19 @@
 # Additional source file(s) mymodule.c (edit SOURCES to change)
 # Link against reference libpi (edit LDLIBS, LDFLAGS to change)
 
-PROGRAM = myprogram.bin
-SOURCES = $(PROGRAM:.bin=.c) mymodule.c LSM6DS33.c accel.c
+RUN_PROGRAM = moonwalker.bin
+TEST_PROGRAM = test_myprogram.bin
+SOURCES = $(PROGRAM:.bin=.c) cstart.c start.s LSM6DS33.c accel.c messages.c controls.c peripherals.c screen.c math.c gl.c title.c
 
-all: $(PROGRAM)
+PROGRAMS = $(RUN_PROGRAM) $(TEST_PROGRAM)
+
+
+all: $(PROGRAMS)
 
 CFLAGS  = -I$(CS107E)/include -Og -g -std=c99 $$warn $$freestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
-LDLIBS  = -lpi -lgcc
+LDLIBS  = -lpi -lgcc -lpiextra
 
 OBJECTS = $(addsuffix .o, $(basename $(SOURCES)))
 
@@ -31,7 +35,10 @@ OBJECTS = $(addsuffix .o, $(basename $(SOURCES)))
 %.list: %.o
 	arm-none-eabi-objdump --no-show-raw-insn -d $< > $@
 
-run: $(PROGRAM)
+run: $(RUN_PROGRAM)
+	rpi-run.py -p $<
+
+test: $(TEST_PROGRAM)
 	rpi-run.py -p $<
 
 clean:
@@ -39,10 +46,10 @@ clean:
 
 # this rule will provide better error message when
 # a source file cannot be found (missing, misnamed)
-$(SOURCES):
+$(SOURCES) $(PROGRAMS:.bin=.c):
 	$(error cannot find source file `$@` needed for build)
 
-.PHONY: all clean run
+.PHONY: all clean run test
 .PRECIOUS: %.elf %.o
 
 # disable built-in rules (they are not used)

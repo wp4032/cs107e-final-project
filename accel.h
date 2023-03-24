@@ -7,21 +7,30 @@
  * to have spatial awareness of the device
  *
  * Author: William Pan <williampan@cs.stanford.edu>
- * Date: Mar 13, 2023
+ * Date: Mar 24, 2023
  */
 
 
 void accel_init();
 
-int accel_get_x();
-int accel_get_y();
-int accel_get_z();
+// FUNCTIONS - Accelerometer
+signed short accel_get_x(void);
+signed short accel_get_y(void);
+signed short accel_get_z(void);
 void accel_xyz(short *x, short *y, short *z);
 
-
-int gyro_get_x();
-int gyro_get_y();
-int gyro_get_z();
+// FUNCTIONS - Gyroscope
+signed short gyro_get_x();
+signed short gyro_get_y();
+signed short gyro_get_z();
 void gyro_xyz(short *x, short *y, short *z);
+
+// FUNCTIONS - Complementary Filter
+void accel_complementary_filter(float *angle_x, float *angle_y, float *angle_z);
+void accel_print_angles(void);
+void accel_loop_angles(void);
+void accel_get_angles(float *pitch_x, float *roll_y);
+
+
 
 #endif
