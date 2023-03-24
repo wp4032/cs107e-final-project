@@ -6,6 +6,9 @@
 
 static color_t back_color;
 
+static int prev_x = SCREEN_X / 2;
+static int prev_y = SCREEN_Y / 2;
+
 void screen_init(void) {
   // Initialize global color variables
   back_color = GL_BLUE;
@@ -23,6 +26,8 @@ void screen_clear(void) {
 }
 
 void loop_test(void) {
+  screen_clear();
+
   while(1) {
     loop();
     control_action_t ctrl = control_get_action();

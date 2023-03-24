@@ -9,9 +9,11 @@
 #include "peripherals.h"
 #include "screen.h"
 #include "math.h"
+#include "interrupts.h"
 
 void main(void) 
 {
+    interrupts_init();
     uart_init();
     timer_init();
     i2c_init();
@@ -19,6 +21,9 @@ void main(void)
     gpio_init();
     peripherals_init();
     math_init();
+
+    interrupts_global_enable();
+
     screen_init();
 
     print_title();

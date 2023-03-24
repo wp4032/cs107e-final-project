@@ -5,6 +5,8 @@
 #include "LSM6DS33.h"
 #include "assert.h"
 #include "math.h"
+#include "armtimer.h"
+#include "interrupts.h"
 
 // For complementary filter
 static float refresh_rate = 100.0; // Hz
@@ -12,7 +14,8 @@ static float gyro_alpha = 0.98;
 
 volatile static float pitch = 0.0;
 volatile static float roll = 0.0;
-float yaw = 0.0;
+
+static void handle_accel(unsigned int pc, void *aux_data);
 
 
 // FUNCTION: accel_init
@@ -21,6 +24,11 @@ float yaw = 0.0;
 void accel_init(void) {
     i2c_init();
     lsm6ds33_init();
+    armtimer_init(30000);
+    armtimer_enable();
+    armtimer_enable_interrupts();
+    interrupts_register_handler(INTERRUPTS_BASIC_ARM_TIMER_IRQ, handle_accel, NULL);
+    interrupts_enable_source(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
 
     assert(lsm6ds33_check_whoami());
 }
@@ -127,9 +135,7 @@ void accel_print_angles(void) {
     float angle_x = 0.0;
     float angle_y = 0.0;
 
-    for (int i = 1; i < 10; i++) {
-        accel_complementary_filter(&angle_x, &angle_y);
-    }
+    accel_complementary_filter(&angle_x, &angle_y);
 
     printf("pitch_x: %d, roll_y: %d\n", (int) (angle_x * 1000), (int) (angle_y * 1000));
 }
@@ -137,7 +143,7 @@ void accel_print_angles(void) {
 void accel_get_angles(float *pitch_x, float *roll_y) {
     accel_complementary_filter(pitch_x, roll_y);
 
-    printf("pitch_x: %d, roll_y: %d\n", (int) (*pitch_x * 1000), (int) (*roll_y * 1000));
+    // printf("pitch_x: %d, roll_y: %d\n", (int) (*pitch_x * 1000), (int) (*roll_y * 1000));
 }
 
 // FUNCTION: accel_loop_angles
@@ -146,6 +152,12 @@ void accel_get_angles(float *pitch_x, float *roll_y) {
 void accel_loop_angles(void) {
     while(1) {
         timer_delay_ms(10);
+        accel_print_angles();
+    }
+}
+
+static void handle_accel(unsigned int pc, void *aux_data) {
+    if(armtimer_check_and_clear_interrupt()) {
         accel_print_angles();
     }
 }

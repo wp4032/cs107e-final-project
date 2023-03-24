@@ -132,7 +132,7 @@ int clear_accel(void) {
   // X orientation has some more tolerance 
   accel_z_offset -= (980 * 16);
   printf("x:%d, y:%d, z:%d\n", accel_x_offset/16, accel_y_offset/16, accel_z_offset/16);
-  return (abs(accel_x_offset/16) > 250 || abs(accel_y_offset/16) > 50 || abs(accel_z_offset/16) > 100);
+  return (abs(accel_x_offset/16) > 250 || abs(accel_y_offset/16) > 100 || abs(accel_z_offset/16) > 100);
 }
 
 
