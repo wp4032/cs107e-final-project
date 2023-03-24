@@ -4,6 +4,12 @@
 #include "timer.h"
 #include "messages.h"
 #include "accel.h" // delete after
+#include "armtimer.h"
+
+color_t back = GL_BLUE;
+color_t front = GL_WHITE;
+
+static void draw_flash(const char *str, color_t front, color_t back, int delay);
 
 static const char *strings[5] = {
   "center",
@@ -65,34 +71,44 @@ void draw_calibration_message(int x, int y, int r, int i) {
   gl_draw_circle_filled(x, y, r, GL_WHITE);
   gl_copy_buffer();
 
-  color_t back = GL_BLUE;
-  color_t front = GL_WHITE;
-  
-
   if (i == 0) {
-    back = GL_WHITE;
-    front = GL_BLUE;
+    draw_flash("3", GL_BLUE, GL_WHITE, 1);
+    draw_flash("2", GL_BLUE, GL_WHITE, 1);
+    draw_flash("1", GL_BLUE, GL_WHITE, 1);
   }
 
-  gl_draw_string_center("3", front);
-  gl_copy_buffer();
-  timer_delay(1);
-  gl_draw_string_center("3", back);
-  gl_copy_buffer();
+  else {
+    draw_flash("3", front, back, 1);
+    draw_flash("2", front, back, 1);
+    draw_flash("1", front, back, 1);
+  }
 
-  gl_draw_string_center("2", front);
-  gl_copy_buffer();
-  timer_delay(1);
-  gl_draw_string_center("2", back);
-  gl_copy_buffer();
-
-  gl_draw_string_center("1", front);
-  gl_copy_buffer();
-  timer_delay(1);
-  gl_draw_string_center("1", back);
-  gl_copy_buffer();
 
   gl_draw_circle_filled(x, y, r, GL_BLUE);
+
+  if (i == 0) {
+    color_t back = GL_BLUE;
+    color_t front = GL_WHITE;
+  }
+}
+
+void draw_calibration_success(void) {
+  draw_flash("Calibration success!", front, back, 1);
+}
+
+void draw_calibration_failure(void) {
+  draw_flash("Calibration failed!", front, back, 1);
+}
+
+void draw_calibration_try_again(void) {
+  draw_flash("Restarting calibration again...", front, back, 1);
+  draw_flash("3", front, back, 1);
+  draw_flash("2", front, back, 1);
+  draw_flash("1", front, back, 1);
+}
+
+void draw_error(void) {
+    draw_flash("Error occured! Restart the device :(", front, back, 1);
 }
 
 void print_calibration_try_again(void) {
@@ -115,4 +131,14 @@ void print_calibration_failure(void) {
 
 void print_error(void) {
   printf("\n\nError occured! Restart the device :(\n");
+}
+
+static void draw_flash(const char *str, color_t front, color_t back, int delay) {
+  armtimer_disable_interrupts();
+  gl_draw_string_center(str, front);
+  gl_copy_buffer();
+  timer_delay(delay);
+  gl_draw_string_center(str, back);
+  gl_copy_buffer();
+  armtimer_enable_interrupts();
 }

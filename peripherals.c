@@ -2,6 +2,7 @@
 #include "messages.h"
 #include "printf.h"
 #include "timer.h"
+#include "uart.h"
 #include "peripherals.h"
 
 
@@ -15,8 +16,8 @@ void peripherals_init(void) {
 
 void error_led(void) {
   gpio_write(ERROR_LED, 1);
-  print_error();
-  while (1) {
+  draw_error();
+  while(1) {
   }
 }
 

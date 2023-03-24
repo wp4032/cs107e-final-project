@@ -92,11 +92,11 @@ static void calibrate_flat(void) {
 
   while (clear_accel() || clear_gyro()) {
     if (attempts == 2) {
-      print_calibration_failure();
+      draw_calibration_failure();
       error_led();
       return;
     }
-    print_calibration_try_again();
+    draw_calibration_try_again();
     attempts++;
   }
 }
@@ -125,7 +125,7 @@ void calibrate(void) {
   average_top_pitch = (top_left_pitch + top_right_pitch) / 2.0;
   average_bottom_pitch = (bottom_left_pitch + bottom_right_pitch) / 2.0;
   
-  print_calibration_success();
+  draw_calibration_success();
 }
 
 
