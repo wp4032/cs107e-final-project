@@ -15,6 +15,6 @@
 #define SCREEN_X 900
 #define SCREEN_Y 600
 #define THRESHOLD 30
-#define SENSITIVITY 40
+#define SENSITIVITY 15
 
 #endif

@@ -1,6 +1,8 @@
 #include "gl.h"
 #include "settings.h"
 #include "strings.h"
+#include "timer.h"
+#include "armtimer.h"
 
 #define SPACING 5
 
@@ -12,6 +14,7 @@ typedef struct  {
 static const title_image_t title;
 
 void draw_title(void) {
+  armtimer_disable_interrupts();
   int x_half = SCREEN_X / 2;
   int y_half = SCREEN_Y / 2;
 
@@ -42,6 +45,9 @@ void draw_title(void) {
   gl_draw_string(x_half - (ar_len / 2), y_half + (title.img_height / 2) + (3 * (char_height + SPACING)) + 20, allrights, GL_WHITE);
 
   gl_swap_buffer();
+
+  timer_delay(5);
+  armtimer_enable_interrupts();
 }
 
 static const title_image_t title = {

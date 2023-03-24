@@ -10,6 +10,7 @@
 #include "screen.h"
 #include "math.h"
 #include "interrupts.h"
+#include "title.h"
 
 void main(void) 
 {
@@ -26,10 +27,10 @@ void main(void)
 
     screen_init();
 
-    print_title();
+    draw_title();
 
     controls_init();
-    // accel_loop_angles();
+    loop_test();
 
     uart_putchar(EOT);
 }

@@ -90,7 +90,11 @@ void set_sensitivity_threshold(signed int sensitivity, signed int threshold) {
 static void calibrate_flat(void) {
   int attempts = 0;
 
-  while (clear_accel() || clear_gyro()) {
+  int result = clear_accel() || clear_gyro();
+
+  if (result) return;
+
+  while (result) {
     if (attempts == 2) {
       draw_calibration_failure();
       error_led();
@@ -142,7 +146,6 @@ int clear_accel(void) {
   // Acceleration in z is always gravity (980 mg)
   // X orientation has some more tolerance 
   accel_z_offset -= 980;
-  printf("x:%d, y:%d, z:%d\n", accel_x_offset, accel_y_offset, accel_z_offset);
   return (abs(accel_x_offset) > 250 || abs(accel_y_offset) > 100 || abs(accel_z_offset) > 100);
 }
 
@@ -196,6 +199,7 @@ void control_read_action(control_action_t *ctrl) {
   // Sees if the current acceleration is above the threshold acceleration; if so, will get an adjusted 
   // x, y movement based on sensitivity.
   signed int delta_y = abs(accel.accel_y) > ctrl->threshold ? accel.accel_y / ctrl->sensitivity : 0;
+  // signed int delta_y = (signed int) ((-0.5 * gyro.gyro_z + 0.5 * accel.accel_y) / ctrl->sensitivity);
 
   // Checks if adding the delta_y and delta_z with the current x, y position will be within bounds 
   ctrl->x += (delta_y + ctrl->x < ctrl->limits.max_x && delta_y + ctrl->x > ctrl->limits.min_x) ? delta_y : 0; 
@@ -216,11 +220,13 @@ control_action_t control_get_action(void) {
   return control;
 }
 
-void loop(void) {
+void control_action_loop(void) {
+  armtimer_disable_interrupts();
   success_led_on();
   control_read_action(&control);
   timer_delay_ms(5);
   success_led_off();
+  armtimer_enable_interrupts();
 }
 
 static void handle_controls(unsigned int pc, void *aux_data) {

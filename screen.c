@@ -3,6 +3,7 @@
 #include "controls.h"
 #include "settings.h"
 #include "screen.h"
+#include "armtimer.h"
 
 static color_t back_color;
 
@@ -29,10 +30,13 @@ void loop_test(void) {
   screen_clear();
 
   while(1) {
-    loop();
+    control_action_loop();
     control_action_t ctrl = control_get_action();
-    gl_draw_pixel(ctrl.x, ctrl.y, GL_WHITE);
-    gl_swap_buffer();
-    // gl_copy_buffer();
+    armtimer_disable_interrupts();
+    gl_draw_line(ctrl.x, ctrl.y, prev_x, prev_y, GL_WHITE);
+    prev_x = ctrl.x;
+    prev_y = ctrl.y;
+    gl_copy_buffer();
+    armtimer_enable_interrupts();
   }
 }

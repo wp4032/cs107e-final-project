@@ -64,6 +64,6 @@ void control_read_angles(void);
 void control_read_action(control_action_t *ctrl);
 control_action_t control_get_action(void);
 
-void loop(void);
+void control_action_loop(void);
 
 #endif
