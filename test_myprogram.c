@@ -13,8 +13,28 @@
 #include "gl.h"
 #include "title.h"
 
+/*
+ * Testing program for the 
+ * DREAM'S DON'T DIE Moonwalker Brain Machine Interface
+ *
+ * Author: William Pan <williampan@cs.stanford.edu>
+ * Date: Mar 28, 2023
+ */
 
-void test_floor(void) {
+void test_math(void) {
+    printf("%d\n", (int) (acos(-1.0) * 1000));
+    printf("%d\n", (int) (asin(0.0) * 1000));
+    printf("%d\n", (int) (acos(1.0) * 1000));
+    printf("%d\n", (int) (asin(-1.00) * 1000));
+    printf("%d\n", (int) (asin(0.0) * 1000));
+    printf("%d\n", (int) (asin(1.00) * 1000));
+    printf("%d\n", (int) (atan(-10.200) * 1000));
+    printf("%d\n", (int) (atan(-10.00) * 1000));
+    printf("%d\n", (int) (atan(0.0) * 1000));
+    printf("%d\n", (int) (atan(10.00) * 1000));
+    printf("%d\n", (int) (atan(10.200) * 1000));
+    printf("%d\n", (int) (sqrt(2.14) * tan(270.2)) * 1000);
+
     assert(floor(3.0) == 3);
     assert(floor(3.3) == 3);
     assert(floor(3.6) == 3);

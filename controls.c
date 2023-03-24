@@ -10,6 +10,8 @@
 #include "armtimer.h"
 #include "interrupts.h"
 
+// Variables for the offset in the accelerometer and gyroscope
+// Used to zero out any potential misalignments from the housing itself
 static signed short accel_x_offset = 0;
 static signed short accel_y_offset = 0;
 static signed short accel_z_offset = 0;
@@ -17,6 +19,8 @@ static signed short gyro_x_offset = 0;
 static signed short gyro_y_offset = 0;
 static signed short gyro_z_offset = 0;
 
+// Variables for the pitch angle when calibrating. We use these pitch angles
+// to then know how we move up and down the screen
 static float flat_pitch = 0.0;
 static float top_left_pitch = 0.0;
 static float top_right_pitch = 0.0;
@@ -25,14 +29,19 @@ static float bottom_right_pitch = 0.0;
 static float average_top_pitch = 0.0;
 static float average_bottom_pitch = 0.0;
 
+// Global accel, gyro, and angles structs to get the values from helper functions
 control_accel_t accel;
 control_gyro_t gyro;
 control_angles_t angles;
 
+// Global limits and control action structs that instruct what the controls are
 static control_limits_t limits;
 static control_action_t control;
 
+
+// Helper function for arm timer interrupts
 static void handle_controls(unsigned int pc, void *aux_data);
+
 
 // FUNCTION: controls_init
 // PARAMS: void
@@ -42,6 +51,7 @@ static void handle_controls(unsigned int pc, void *aux_data);
 // (3) setting the sensitivity and threshold of activation of the control
 // (4) intializes current measurement and starts calibration process
 void controls_init(void) {
+  // Enables the armtimer interrupts
   armtimer_init(30000);
   armtimer_enable();
   armtimer_enable_interrupts();
@@ -73,7 +83,8 @@ void set_limits(signed int screen_x, signed int screen_y) {
 void set_location(signed int screen_x, signed int screen_y) {
   control.x = screen_x / 2;
   control.y = screen_y / 2;
-  control.action = EMG_INACTIVE;
+  control.action = EMG_INACTIVE;      // Wasn't able to implement because EMG sensor didn't work; but when EMG would be active, this would draw on the screen
+  control.color = 0xffffffff;
 }
 
 
@@ -87,6 +98,11 @@ void set_sensitivity_threshold(signed int sensitivity, signed int threshold) {
 }
 
 
+// FUNCITON: calibrate_flat
+// PARAMS: void
+// RETURNS: starts the calibration for when pointing straight at the screen;
+// it will clear the accelerometer and gyroscope to get its offsets and if
+// the device is not flat, will ask user to restart process again.
 static void calibrate_flat(void) {
   int attempts = 0;
 
@@ -126,7 +142,7 @@ void calibrate(void) {
   draw_calibration_message(SCREEN_X - 15, SCREEN_Y - 15, 15, 4);           // Point to bottom right
   bottom_right_pitch = angles.pitch_x;
 
-  average_top_pitch = (top_left_pitch + top_right_pitch) / 2.0;
+  average_top_pitch = (top_left_pitch + top_right_pitch) / 2.0;            // Averages out the pitch angles to be more precise
   average_bottom_pitch = (bottom_left_pitch + bottom_right_pitch) / 2.0;
   
   draw_calibration_success();
@@ -169,6 +185,7 @@ void control_read_accel(void) {
   accel.accel_x = (accel_get_x() - accel_x_offset)/16;
   accel.accel_y = (accel_get_y() - accel_y_offset)/16; 
   accel.accel_z = (accel_get_z() - accel_z_offset)/16;
+
   // Uncomment below to visualize the current acceleration
   // printf("accel=(%d,%d,%d)\n", accel.accel_x, accel.accel_y, accel.accel_z);
 }
@@ -181,15 +198,21 @@ void control_read_gyro(void) {
   gyro.gyro_x = (gyro_get_x() - gyro_x_offset)/16;
   gyro.gyro_y = (gyro_get_y() - gyro_y_offset)/16; 
   gyro.gyro_z = (gyro_get_z() - gyro_z_offset)/16;
+
   // Uncomment below to visualize the current angular velocity
   // printf("gyro=(%d,%d,%d)\n", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z);
 }
 
+// FUNCTION: control_read_angles
+// PARAMS: void
+// RETURNS: gets a reading the pitch and roll angles from the accelerometer
 void control_read_angles(void) {
   accel_get_angles(&(angles.pitch_x), &(angles.roll_y));
+
   // Uncomment below to visualize the pitch and roll angles
   // printf("pitch_x: %d, roll_y: %d\n", (int) (angles.pitch_x * 1000), (int) (angles.roll_y * 1000));
 }
+
 
 // FUNCTION: control_read_action
 // PARAMS: control_action_t *ctrl
@@ -199,11 +222,11 @@ void control_read_action(control_action_t *ctrl) {
   // Sees if the current acceleration is above the threshold acceleration; if so, will get an adjusted 
   // x, y movement based on sensitivity.
   signed int delta_y = abs(accel.accel_y) > ctrl->threshold ? accel.accel_y / ctrl->sensitivity : 0;
-  // signed int delta_y = (signed int) ((-0.5 * gyro.gyro_z + 0.5 * accel.accel_y) / ctrl->sensitivity);
 
   // Checks if adding the delta_y and delta_z with the current x, y position will be within bounds 
   ctrl->x += (delta_y + ctrl->x < ctrl->limits.max_x && delta_y + ctrl->x > ctrl->limits.min_x) ? delta_y : 0; 
 
+  // Calculates the current y value on the screen by interpolating between the top and bottom pitch angles
   if (angles.pitch_x > average_bottom_pitch && angles.pitch_x < average_top_pitch) {
     switch(angles.pitch_x > flat_pitch) {
       case 1:
@@ -213,22 +236,38 @@ void control_read_action(control_action_t *ctrl) {
     }
   }
 
-  printf("x: %d, y: %d\n", ctrl->x, ctrl->y);
+  // Changes the color of the cursor by how much you turn your wrist
+  ctrl->color = (unsigned int) (0xffffffff * (angles.roll_y / 180.0));
 }
 
+
+// FUNCTION: control_get_action
+// PARAMS: void
+// RETURNS: returns the current control_action_t struct for other programs
+// such as the screen program to interface with
 control_action_t control_get_action(void) {
   return control;
 }
 
+
+// FUNCTION: control_action_loop
+// PARAMS: void
+// RETURNS: calls an iteration in getting the control_action_t struct by
+// reading blinking peripheral LEDs and getting the control_action_t struct
 void control_action_loop(void) {
   armtimer_disable_interrupts();
   success_led_on();
   control_read_action(&control);
-  timer_delay_ms(5);
   success_led_off();
   armtimer_enable_interrupts();
 }
 
+
+// FUNCTION: handle_controls
+// PARAMS: unsigned int pc, void *aux_data
+// RETURNS: uses armtimer interrupts to get the readings in the accelerometer, gyroscope,
+// and angles. The data gathering must need to happen at all times because the complementary
+// filter needs to integrate with time to get the angular velocity.
 static void handle_controls(unsigned int pc, void *aux_data) {
   if (armtimer_check_and_clear_interrupt()) {
     control_read_accel();

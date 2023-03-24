@@ -152,12 +152,17 @@ void gl_draw_string(int x, int y, const char* str, color_t c)
     }
 }
 
+
+// FUNCTION: gl_draw_string_center
+// PARAMS: const char* str, color_t c
+// RETURNS: draws a string at the center of the screen with a specific color
 void gl_draw_string_center(const char* str, color_t c) {
     int string_width = strlen(str) * gl_get_char_width();
     int string_height = gl_get_char_height();
 
     gl_draw_string((SCREEN_X / 2) - (string_width / 2), (SCREEN_Y / 2) - (string_height / 2), str, c);
 }
+
 
 unsigned int gl_get_char_height(void)
 {
@@ -170,6 +175,10 @@ unsigned int gl_get_char_width(void)
 }
 
 
+// FUNCTION: brighten_color
+// PARAMS: color_t c, float alpha
+// RETURNS: takes in a color and given an alpha will brighten the color
+// used for the line drawing algorithm
 color_t brighten_color(color_t c, float alpha) {
     // If invalid alpha 
     if (alpha > 1.0 || alpha < 0.0) {
@@ -188,6 +197,10 @@ color_t brighten_color(color_t c, float alpha) {
 }
 
 
+// FUNCTION: gl_draw_line
+// PARAMS: int x1, int y1, int x2, int y2, color_t c
+// RETURNS: draws a line from (x1, y1) to (x2, y2) with anti-aliasing
+// CITATION: https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
 void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
     int steep = abs(y2 - y1) > abs(x2 - x1);
 
@@ -226,6 +239,9 @@ void gl_draw_line(int x1, int y1, int x2, int y2, color_t c) {
     }
 }
 
+// FUNCTION: gl_draw_flat_line
+// PARAMS: int x1, int y1, int x2, int y2, color_t c
+// RETURNS: draws a flat line without having to use anti-aliasing; for the circle drawing algorithm
 static void gl_draw_flat_line(int x1, int y1, int x2, int y2, color_t c) {
     if (y2 - y1 == 0) {
         for (int x = x1; x <= x2; x++) {
@@ -247,7 +263,7 @@ static void gl_draw_circle(int x, int y, int r, color_t c, int filled) {
 
     int x_0 = 0;
     int y_0 = r;
-    int p = 3 - (2 * r);
+    int p = 3 - (2 * r);        // Factor to determine when to shift over instead of drawing in pixel above
 
     while (x_0 <= y_0) {
         if (filled == 0) {

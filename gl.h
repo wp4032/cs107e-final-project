@@ -10,6 +10,8 @@
  *
  * Students implement this module in assignment 6 (text and rectangles
  * are required, lines and triangles are an extension).
+ * 
+ * Additional functions added by William Pan <williampan@stanford.edu>
  *
  * Author: Philip Levis <pal@cs.stanford.edu>
  * Date: Mar 23 2016

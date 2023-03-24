@@ -6,7 +6,6 @@
 /*
  * Controls the peripherals (GPIOs, etc) of the system
  * DREAM'S DON'T DIE Moonwalker Brain Machine Interface
- * to have spatial awareness of the device
  *
  * Author: William Pan <williampan@cs.stanford.edu>
  * Date: Mar 28, 2023

@@ -19,6 +19,10 @@ static const char *strings[5] = {
   "bottom right",
 };
 
+
+// PRINT FUNCTIONS
+// Functions that print into terminal
+
 void print_title(void) {
   printf("Welcome to:\n Dreams Don't Die - Moonwalker\nby: William Pan (williampan@stanford.edu)\nMarch 28, 2023\n");
 }
@@ -43,6 +47,32 @@ void print_calibration_message(int x, int y, int r, int i) {
   printf("\n[1]\n");
   accel_print_angles();
 }
+
+void print_calibration_try_again(void) {
+  printf("\nRestarting calibration again...\nTry to point your arm straight toward the screen\n");
+  timer_delay(1);
+  printf("\n[3]");
+  timer_delay(1);
+  printf("\n[2]");
+  timer_delay(1);
+  printf("\n[1]\n");
+}
+
+void print_calibration_success(void) {
+  printf("\n\nCalibration successful!\n");
+}
+
+void print_calibration_failure(void) {
+  printf("\n\nCalibration failed!\n");
+}
+
+void print_error(void) {
+  printf("\n\nError occured! Restart the device :(\n");
+}
+
+
+// DRAW FUNCTIONS
+// Functions that draw onto the screen
 
 void draw_start_calibration(void) {
   draw_calibration_message(SCREEN_X / 2, SCREEN_Y / 2, 15, 0);             // Point to center
@@ -83,13 +113,7 @@ void draw_calibration_message(int x, int y, int r, int i) {
     draw_flash("1", front, back, 1);
   }
 
-
   gl_draw_circle_filled(x, y, r, GL_BLUE);
-
-  if (i == 0) {
-    color_t back = GL_BLUE;
-    color_t front = GL_WHITE;
-  }
 }
 
 void draw_calibration_success(void) {
@@ -109,28 +133,6 @@ void draw_calibration_try_again(void) {
 
 void draw_error(void) {
     draw_flash("Error occured! Restart the device :(", front, back, 1);
-}
-
-void print_calibration_try_again(void) {
-  printf("\nRestarting calibration again...\nTry to point your arm straight toward the screen\n");
-  timer_delay(1);
-  printf("\n[3]");
-  timer_delay(1);
-  printf("\n[2]");
-  timer_delay(1);
-  printf("\n[1]\n");
-}
-
-void print_calibration_success(void) {
-  printf("\n\nCalibration successful!\n");
-}
-
-void print_calibration_failure(void) {
-  printf("\n\nCalibration failed!\n");
-}
-
-void print_error(void) {
-  printf("\n\nError occured! Restart the device :(\n");
 }
 
 static void draw_flash(const char *str, color_t front, color_t back, int delay) {

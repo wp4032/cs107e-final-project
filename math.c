@@ -6,10 +6,13 @@ void math_init(void) {
     return;
 }
 
+// Constant values of PI π
 const float _pi = 3.141592653589793;
 const float _pi_2 = 1.5707963267948966;
 const float _pi_4 = 0.7853981633974483;
 
+// Table of cos
+// Domain is 0 degrees to 360 degrees
 static float _cos[360] = {
     1.0,
     0.9998476951563913,
@@ -373,6 +376,8 @@ static float _cos[360] = {
     0.9998476951563913
 };
 
+// Table of sin
+// Domain is 0 degrees to 360 degrees
 static float _sin[360] = {
     0.0,
     0.01745240643728351,
@@ -1034,14 +1039,18 @@ static float _atan[2001] = {
     1.470228573646906,	1.4703292712797684,	1.4704297681358884,	1.4705300648131245,	1.4706301619069715,	1.4707300600105733,	1.4708297597147328,	1.4709292616079255,	1.4710285662763087,	1.4711276743037347,
 };
 
-// FUNCTION: cos
+
+// TRIGONOMETRY INTERFACING FUNCTIONS
+// Functions that interface with the above arrays and can only take in ints
+
+// FUNCTION: __cos
 // PARAMS: int x
 // RETURNS: cos(x) where x is the integer value of the degree
 float __cos(int x) {
     return _cos[x % 360];
 }
 
-// FUNCTION: sin
+// FUNCTION: __cos
 // PARAMS: int x
 // RETURNS: sin(x) where x is the integer value of the degree
 float __sin(int x) {
@@ -1086,6 +1095,9 @@ float __atan(int x) {
 }
 
 
+// TRIGONOMETRY FUNCTIONS
+// Functions that can take in floats, but will be rounded and may be incorrect
+
 float cos(float x) {
     return __cos((int) (x));
 }
@@ -1115,6 +1127,9 @@ float atan2(float y, float x) {
 }
 
 
+// BASIC MATH FUNCTIONS
+// Math functions that are very simple such as square root and power
+
 // FUNCTION: pwr
 // PARAMS: float a, signed int b
 // RETURNS: a^b where a is a float and b is an integer
@@ -1134,7 +1149,6 @@ float pwr(float a, signed int b) {
     return result;
 }
 
-
 // FUNCTION: pwr10
 // PARAMS: signed int b
 // RETURNS: 10^b where b is an integer
@@ -1142,7 +1156,6 @@ float pwr(float a, signed int b) {
 float pwr10(signed int b) {
     return pwr(10.0, b);
 }
-
 
 // FUNCTION: sqrt
 // PARAMS: float a
@@ -1181,23 +1194,40 @@ float sqrt(float a) {
     return result;
 }
 
-// ABSTRACT / MODULUAR MATH
+// ABSTRACT / MODULUAR MATH FUNCTIONS
+// Functions that deal with integers or miscellaneous 
+
+// FUNCTION: floor
+// PARAMS: float x
+// RETURNS: the integer part of x
 int floor(float x) {
     return (int) x;
 }
 
+// FUNCTION: round
+// PARAMS: float x
+// RETURNS: rounds x to the nearest integer
 int round(float x) {
     return floor(x + 0.5);
 }
 
+// FUNCTION: decimals
+// PARAMS: float x
+// RETURNS: the decimal part of x
 float decimals(float x) {
     return x - ((float) floor(x));
 }
 
+// FUNCTION: decimals_flipped
+// PARAMS: float x
+// RETURNS: the (1 - decimal part of x)
 float decimals_flipped(float x) {
     return 1 - decimals(x);
 }
 
+// FUNCTION: swap
+// PARAMS: int *a, int *b
+// RETURNS: swaps the two integers
 void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -1216,10 +1246,19 @@ unsigned int abs(signed int a) {
 
 
 // VECTOR MATH
+// Functions that deal with vectors
+// Ended up not using but would be interested in further developing in the future
+
+// FUNCTION: v_dot
+// PARAMS: vector_t a, vector_t b
+// RETURNS: vector dot product of a and b
 float v_dot(vector_t a, vector_t b) {
   return (a.x * b.x) + (a.y * b.y) + (a.z + b.z);
 }
 
+// FUNCTION: v_add
+// PARAMS: vector_t a, vector_t b
+// RETURNS: vector addition of a and b
 vector_t v_add(vector_t a, vector_t b) {
   vector_t result;
   result.x = a.x + b.x;
@@ -1228,6 +1267,9 @@ vector_t v_add(vector_t a, vector_t b) {
   return result;
 }
 
+// FUNCTION: v_sub
+// PARAMS: vector_t a, vector_t b
+// RETURNS: vector subtraction of a and b
 vector_t v_sub(vector_t a, vector_t b) {
   vector_t result;
   result.x = a.x - b.x;
@@ -1236,6 +1278,9 @@ vector_t v_sub(vector_t a, vector_t b) {
   return result;
 }
 
+// FUNCTION: v_multiply
+// PARAMS: vector_t a, vector_t b
+// RETURNS: vector and scalar multplication of a and b
 vector_t v_multiply(vector_t a, float b) {
   vector_t result;
   result.x = a.x * b;
@@ -1244,6 +1289,9 @@ vector_t v_multiply(vector_t a, float b) {
   return result;
 }
 
+// FUNCTION: v_multiply
+// PARAMS: vector_t a, vector_t b
+// RETURNS: vector and scalar division of a and b
 vector_t v_divide(vector_t a, float b) {
   vector_t result;
   result.x = a.x / b;

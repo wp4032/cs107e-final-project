@@ -1,8 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "gl.h"
-
 /*
  * Global control settings 
  * DREAM'S DON'T DIE Moonwalker Brain Machine Interface

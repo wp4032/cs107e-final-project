@@ -13,11 +13,16 @@ typedef struct  {
 
 static const title_image_t title;
 
+
+// FUNCTION: draw_title
+// PARAMS: void
+// RETURNS: draws the title screen for 5 seconds
 void draw_title(void) {
   armtimer_disable_interrupts();
   int x_half = SCREEN_X / 2;
   int y_half = SCREEN_Y / 2;
 
+  // Draws image of DREAMS DON'T DIE LOGO on screen
   for(int x = 0; x < title.img_width; x++) {
     for(int y = 0; y < title.img_height; y++) {
       color_t c = (color_t) (~title.title_img[x + (y * title.img_width)]);
@@ -39,6 +44,7 @@ void draw_title(void) {
   const char *allrights = "All Rights Reserved";
   int ar_len = strlen(allrights) * char_width;
 
+  // Draws various other text (ones above)
   gl_draw_string(x_half - (wel_len / 2), y_half - (title.img_height / 2) - char_height - SPACING, welcome, GL_WHITE);
   gl_draw_string(x_half - (moon_len / 2), y_half + (title.img_height / 2) + char_height - 10, moonwalker, GL_WHITE);
   gl_draw_string(x_half - (cred_len / 2), y_half + (title.img_height / 2) + (2 * (char_height + SPACING)) + 20, credit, GL_WHITE);
@@ -50,6 +56,8 @@ void draw_title(void) {
   armtimer_enable_interrupts();
 }
 
+
+// title_image_t holds the color values of the image
 static const title_image_t title = {
   .img_width = 249,
   .img_height = 124,

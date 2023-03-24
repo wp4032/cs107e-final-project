@@ -2,10 +2,11 @@
 #define MATH_H
 
 /*
- * Math Library
+ * A very simple math library for the
+ * DREAM'S DON'T DIE Moonwalker Brain Machine Interface
  *
- * Citation: from Sun Microsystems
- * https://elixir.bootlin.com/musl/v0.9.9/source/src/math
+ * Author: William Pan <williampan@cs.stanford.edu>
+ * Date: Mar 28, 2023
  */
 
 void math_init(void);
@@ -19,13 +20,6 @@ typedef struct {
   float y;
   float z;
 } vector_t;
-
-// static float _cos[360];
-// static float _sin[360];
-// static float _tan[360];
-// static float _acos[201];
-// static float _asin[201];
-// static float _atan[2001];
 
 float __cos(int x);
 float __sin(int x);
@@ -58,19 +52,5 @@ vector_t v_add(vector_t a, vector_t b);
 vector_t v_sub(vector_t a, vector_t b);
 vector_t v_multiply(vector_t a, float b);
 vector_t v_divide(vector_t a, float b);
-
-// TEST FUNCTIONS:
-// printf("%d\n", (int) (acos(-1.0) * 1000));
-// printf("%d\n", (int) (asin(0.0) * 1000));
-// printf("%d\n", (int) (acos(1.0) * 1000));
-// printf("%d\n", (int) (asin(-1.00) * 1000));
-// printf("%d\n", (int) (asin(0.0) * 1000));
-// printf("%d\n", (int) (asin(1.00) * 1000));
-// printf("%d\n", (int) (atan(-10.200) * 1000));
-// printf("%d\n", (int) (atan(-10.00) * 1000));
-// printf("%d\n", (int) (atan(0.0) * 1000));
-// printf("%d\n", (int) (atan(10.00) * 1000));
-// printf("%d\n", (int) (atan(10.200) * 1000));
-// printf("%d\n", (int) (sqrt(2.14) * tan(270.2)) * 1000);
 
 #endif

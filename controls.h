@@ -1,6 +1,8 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+#include "gl.h"
+
 /*
  * Outputs x, y, z controls for the
  * DREAM'S DON'T DIE Moonwalker Brain Machine Interface
@@ -38,15 +40,11 @@ typedef struct {
   enum { EMG_INACTIVE, EMG_ACTIVE } action;
   signed int x;
   signed int y;
+  color_t color;
   control_limits_t limits;
   signed int sensitivity;
   signed int threshold;
 } control_action_t;
-
-// #define SCREEN_X 1960
-// #define SCREEN_Y 1600
-// #define THRESHOLD 50
-// #define SENSITIVITY 30 
 
 void controls_init(void);
 
